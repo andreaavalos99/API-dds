@@ -1,0 +1,12 @@
+
+Servicio 1: Recomendación de Donación
+La ONG a cargo del sistema quiere extender la posibilidad de donaciones a otras comunidades existentes. Para ello se requiere generar un servicio que dada una ubicación geográfica, propone los lugares dónde podés acercar donaciones.
+
+Servicio 2: Reconocimientos Extra
+Hay empresas que decidieron brindar beneficios a los colaboradores pero desde sus propias plataformas. Para eso vamos a implementar un servicio que recomiende colaboradores de acuerdo a los parámetros solicitados por las distintas empresas.
+La empresa solicitará una cantidad mínima de puntos requeridos, una cantidad mínima de donación de viandas realizada en el último mes y una cantidad máxima de colaboradores a ser incorporados en la plataforma externa. En caso de que no se llegue a la cantidad de colaboradores solicitados, se deberán devolver únicamente los que cumplan las condiciones.
+Nuestro sistema debe devolver una lista de colaboradores a ser reconocidos por otras empresas, junto con el puntaje que obtuvo cada uno hasta el momento.
+
+Servicio 3: Atención Médica
+La ONG a cargo del sistema tiene un programa que se dedica a brindar atención médica a personas en situación de calle. Diariamente sale un grupo de médicos voluntarios a buscar personas que necesiten atención. Sin embargo, en algunos casos ocurre que les es difícil saber en qué barrio pueden generar el mayor impacto.
+Es por eso que se nos solicitó los datos de las personas que tenemos registradas para realizar sus circuitos. Diariamente, se ejecutará este servicio y se espera que el mismo retorne una lista de las localidades con la cantidad de personas que tenemos registradas como en situación de calle que solicitaron al menos una vianda en ese barrio. Además, los médicos nos solicitaron saber también el nombre de aquellas personas.
