@@ -14,6 +14,17 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 class ColaboradorServiceTest {
 
@@ -45,17 +56,21 @@ class ColaboradorServiceTest {
 
         List<Colaborador> colaboradoresMock = Arrays.asList(colaborador1, colaborador2);
 
-        when(colaboradorRepository.findByPuntajeGreaterThanEqualAndDonacionViandasGreaterThanEqual(80, 5))
+        // Configurar el mock
+        when(colaboradorRepository.findByPuntajeYDonacionViandas(80, 5))
                 .thenReturn(colaboradoresMock);
 
-        // Act
+        // Actuar
         List<Colaborador> result = colaboradorService.obtenerColaboradoresReconocidos(80, 5, 10);
 
-        // Assert
+        // Verificar el resultado
         assertNotNull(result);
         assertEquals(2, result.size());
         assertEquals("Juan Perez", result.get(0).getNombre());
         assertEquals("Ana Gomez", result.get(1).getNombre());
+
+        // Verificar que el repositorio fue llamado con los argumentos correctos
+        verify(colaboradorRepository).findByPuntajeYDonacionViandas(80, 5);
     }
 
     @Test
@@ -75,13 +90,14 @@ class ColaboradorServiceTest {
 
         List<Colaborador> colaboradoresMock = Arrays.asList(colaborador1, colaborador2);
 
-        when(colaboradorRepository.findByPuntajeGreaterThanEqualAndDonacionViandasGreaterThanEqual(80, 5))
+        // Configurar el mock
+        when(colaboradorRepository.findByPuntajeYDonacionViandas(80, 5))
                 .thenReturn(colaboradoresMock);
 
-        // Act
+        // Actuar
         List<Colaborador> result = colaboradorService.obtenerColaboradoresReconocidos(80, 5, 1);
 
-        // Assert
+        // Verificar el resultado
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("Juan Perez", result.get(0).getNombre());
