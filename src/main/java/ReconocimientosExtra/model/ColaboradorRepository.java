@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 public interface ColaboradorRepository extends JpaRepository<Colaborador, Long> {
+
     /*
     * Spring Data JPA interpreta el nombre del método y
     genera automáticamente la consulta SQL necesaria para realizar la búsqueda en la base de datos.

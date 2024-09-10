@@ -6,16 +6,22 @@ Esta api permite consultar que colaboradores cumplen con ciertos criterios espec
 de tal forma de ser merecedores de beneficios brindados por empresas donantes.
 Se basa en la cantidad de puntos y donaciones de viandas minima del ultimo mes
 
+Entidades y base de datos
+
 URL Base
 Local: http://localhost:8080/api/v1
 Producción: https://api.miservicio.com/api/v1
 
 Endpoints Disponibles
+    -Clase Colaborador: representa la entidad que se mapea a la base de datos a través de JPA
+    -Interfaz ColaboradorRepository:  interfaz que extiende JpaRepository, la cual permite interactuar con la base de datos
+    -Clase ColaboradorService: contiene la lógica de negocio, como la obtención de colaboradores filtrados por puntaje y donaciones. Utiliza el repositorio para acceder a la base de datos y procesa la información antes de devolverla.
+    -Clase ColaboradorController: expone la API REST que permite a los usuarios finales (u otras aplicaciones) obtener una lista de colaboradores recomendados basados en criterios como puntaje mínimo y donaciones mínimas.
 
 - Obtener Colaboradores Recomendados:
     Lista de colaboradores que cumplen con los criterios solicitados
 
-URL: /colaboradores/recomendados
+URL: /api/v1/colaboradores/recomendados
 Método HTTP: GET
 Parametros:
     - minPuntos	int
@@ -24,16 +30,44 @@ Parametros:
 Ejemplo:
 GET http://localhost:8080/api/v1/colaboradores/recomendados?minPuntos=80&minDonacionViandas=5&maxColaboradores=10
 
-- Sincronizar Colaboradores:
-    Permite traer una lista de una base de datos de colaboradores externos a la nuestra
+Respuesta:
+[
+    {
+        "id": 1,
+        "nombre": "Juan Perez",
+        "puntaje": 60,
+        "donacionesUltimoMes": 6
+    },
+    {
+        "id": 2,
+        "nombre": "Maria Lopez",
+        "puntaje": 70,
+        "donacionesUltimoMes": 8
+    }
+]
 
-URL: /colaboradores/sincronizar
-Método HTTP: POST
-Parametros:
-    -id	Long
-    -nombre	String
-    -puntaje	int
-    -donacionViandas	int
-Ejemplo
-POST http://localhost:8080/api/v1/colaboradores/sincronizar
 
+Comportamiento:
+
+200 OK: Devuelve una lista de colaboradores que cumplen con los criterios especificados.
+204 No Content: No hay colaboradores que cumplan con los criterios.
+500 Internal Server Error: Ocurre un error en el servidor.
+
+Clase ReconocimientosExtraApplication:
+Esta es la clase principal que arranca la aplicación Spring Boot. Es responsable de iniciar el contexto de Spring y poner en marcha la API.
+
+Funcionalidad
+1) Inicio de la Aplicación: La aplicación arranca a través de la clase ReconocimientosExtraApplication. Spring Boot levanta el servidor embebido
+(como Tomcat) y expone los endpoints REST definidos en el controlador.
+
+2) Solicitud del Usuario: Un cliente (como una aplicación web o Postman) realiza una solicitud GET a la URL: /api/v1/colaboradores/
+ Debe proporcionar los parámetros de consulta minPuntos, minDonacionViandas, y maxColaboradores.
+
+3) Controlador (ColaboradorController): El controlador recibe la solicitud, valida los parámetros y llama al servicio ColaboradorService para obtener
+la lista de colaboradores que cumplen con los criterios.
+
+4) Servicio (ColaboradorService): El servicio llama al repositorio para obtener colaboradores que tienen un puntaje mayor o igual a minPuntos y
+un número de donaciones mayor o igual a minDonacionViandas. Luego limita la lista al número de colaboradores especificado por maxColaboradores.
+
+5) Respuesta: El controlador devuelve la lista de colaboradores en formato JSON. Si no se encuentran colaboradores, devuelve una respuesta con
+el código 204 No Content. Si hay un error, devuelve un 500 Internal Server Error

@@ -1,0 +1,153 @@
+CREATE DATABASE IF NOT EXISTS pruebas_colaborador;
+USE pruebas_colaborador;
+
+-- Tabla para la entidad Colaborador
+CREATE TABLE colaborador (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255),
+    apellido VARCHAR(255),
+    tipoDocumento VARCHAR(255),
+    documento INT,
+    fechaNacimiento DATE,
+    puntosCanjeados DOUBLE,
+    tipo VARCHAR(255),
+    razonSocial VARCHAR(255),
+    mediosDeContacto JSON, -- Usamos JSON para campos embebidos
+    direccion JSON -- Usamos JSON para campos embebidos
+);
+
+-- Tabla para campos dinámicos
+CREATE TABLE campos_dinamicos (
+    colaborador_id BIGINT,
+    pregunta VARCHAR(255),
+    respuesta VARCHAR(255),
+    PRIMARY KEY (colaborador_id, pregunta),
+    FOREIGN KEY (colaborador_id) REFERENCES colaborador(id)
+);
+
+-- Tabla para formas de colaborar habilitadas
+CREATE TABLE formasDeColaborarHabilitadas_colaborador (
+    colaborador_id BIGINT,
+    formaDeColaboracion VARCHAR(255),
+    PRIMARY KEY (colaborador_id, formaDeColaboracion),
+    FOREIGN KEY (colaborador_id) REFERENCES colaborador(id)
+);
+
+-- Tabla para colaboraciones
+CREATE TABLE colaboracion (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    fechaColaboracion DATE,
+    calculada BOOLEAN,
+    puntos DOUBLE,
+    descripcion VARCHAR(255),
+    colaborador_id BIGINT,
+    FOREIGN KEY (colaborador_id) REFERENCES colaborador(id)
+);
+
+-- Tablas específicas para tipos de colaboración
+CREATE TABLE distribucion_vianda (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    FOREIGN KEY (id) REFERENCES colaboracion(id)
+);
+
+CREATE TABLE donacion_dinero (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    FOREIGN KEY (id) REFERENCES colaboracion(id)
+);
+
+CREATE TABLE donacion_vianda (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    FOREIGN KEY (id) REFERENCES colaboracion(id)
+);
+
+CREATE TABLE hacerse_cargo_de_heladera (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    FOREIGN KEY (id) REFERENCES colaboracion(id)
+);
+
+CREATE TABLE registro_personas_vulnerables (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    FOREIGN KEY (id) REFERENCES colaboracion(id)
+);
+
+-- Tabla para heladeras
+CREATE TABLE heladera (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) -- Añade otros campos necesarios
+);
+
+-- Tabla para heladeras frecuentadas por colaboradores
+CREATE TABLE heladeras_frecuentadas (
+    colaborador_id BIGINT,
+    heladera_id BIGINT,
+    PRIMARY KEY (colaborador_id, heladera_id),
+    FOREIGN KEY (colaborador_id) REFERENCES colaborador(id),
+    FOREIGN KEY (heladera_id) REFERENCES heladera(id)
+);
+
+-- Tabla para notificaciones
+CREATE TABLE notificacion (
+    colaborador_id BIGINT,
+    tipoNotificacion VARCHAR(255),
+    PRIMARY KEY (colaborador_id, tipoNotificacion),
+    FOREIGN KEY (colaborador_id) REFERENCES colaborador(id)
+);
+
+
+-- Insertar datos en la tabla colaborador
+INSERT INTO colaborador (nombre, apellido, tipoDocumento, documento, fechaNacimiento, puntosCanjeados, tipo, razonSocial, mediosDeContacto, direccion)
+VALUES
+('Juan', 'Pérez', 'DNI', 12345678, '1980-01-15', 100.0, 'PERSONA_FISICA', NULL, '{"telefono": "123456789", "email": "juan.perez@example.com"}', '{"calle": "Av. Siempre Viva", "numero": "742", "ciudad": "Springfield", "codigoPostal": "12345"}'),
+('Ana', 'Gómez', 'DNI', 87654321, '1990-05-25', 50.0, 'PERSONA_FISICA', NULL, '{"telefono": "987654321", "email": "ana.gomez@example.com"}', '{"calle": "Calle Falsa", "numero": "123", "ciudad": "Shelbyville", "codigoPostal": "54321"}');
+
+-- Insertar datos en la tabla campos_dinamicos
+INSERT INTO campos_dinamicos (colaborador_id, pregunta, respuesta)
+VALUES
+(1, '¿Cuál es tu disponibilidad?', 'Lunes a Viernes de 9 a 17 hs'),
+(2, '¿Qué habilidades tienes?', 'Experiencia en cocina');
+
+-- Insertar datos en la tabla formasDeColaborarHabilitadas_colaborador
+INSERT INTO formasDeColaborarHabilitadas_colaborador (colaborador_id, formaDeColaboracion)
+VALUES
+(1, 'Donación de alimentos'),
+(2, 'Voluntariado en eventos');
+
+-- Insertar datos en la tabla colaboracion
+INSERT INTO colaboracion (fechaColaboracion, calculada, puntos, descripcion, colaborador_id)
+VALUES
+('2024-01-10', TRUE, 10.0, 'Donación de alimentos', 1),
+('2024-02-15', TRUE, 5.0, 'Voluntariado en evento', 2);
+
+-- Insertar datos en las tablas específicas de tipo de colaboración
+INSERT INTO distribucion_vianda (id)
+VALUES (1);
+
+INSERT INTO donacion_dinero (id)
+VALUES (2);
+
+INSERT INTO donacion_vianda (id)
+VALUES (3);
+
+INSERT INTO hacerse_cargo_de_heladera (id)
+VALUES (4);
+
+INSERT INTO registro_personas_vulnerables (id)
+VALUES (5);
+
+-- Insertar datos en la tabla heladera
+INSERT INTO heladera (nombre)
+VALUES
+('Heladera A'),
+('Heladera B');
+
+-- Insertar datos en la tabla heladeras_frecuentadas
+INSERT INTO heladeras_frecuentadas (colaborador_id, heladera_id)
+VALUES
+(1, 1),
+(2, 2);
+
+-- Insertar datos en la tabla notificacion
+INSERT INTO notificacion (colaborador_id, tipoNotificacion)
+VALUES
+(1, 'Newsletter'),
+(2, 'Actualizaciones de eventos');
