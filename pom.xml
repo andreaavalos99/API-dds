@@ -99,24 +99,23 @@
             <version>3.0.0</version>
         </dependency>
 
+        <!-- Dependencia para pruebas con Spring Boot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
 
-
-
     </dependencies>
 
     <build>
 
-            <resources>
-                <resource>
-                    <directory>src/main/resources</directory>
-                    <filtering>false</filtering>
-                </resource>
-            </resources>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
 
 
         <plugins>

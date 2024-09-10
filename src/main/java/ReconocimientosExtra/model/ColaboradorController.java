@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/api/v1")
 public class ColaboradorController {
@@ -29,16 +28,6 @@ public class ColaboradorController {
             return ResponseEntity.ok(colaboradores);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-
-    @PostMapping("/colaboradores/sincronizar")
-    public ResponseEntity<String> sincronizarColaboradores(@RequestBody List<Colaborador> colaboradoresExternos) {
-        try {
-            colaboradorService.sincronizarColaboradores(colaboradoresExternos);
-            return ResponseEntity.ok("Colaboradores sincronizados correctamente");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al sincronizar colaboradores");
         }
     }
 }

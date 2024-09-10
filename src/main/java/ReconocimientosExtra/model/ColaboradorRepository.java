@@ -5,7 +5,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public interface ColaboradorRepository extends JpaRepository<Colaborador, Long> {
-    List<Colaborador> findByPuntajeGreaterThanEqualAndDonacionViandasGreaterThanEqual(int puntajeMinimo, int donacionMinima);
+    /*
+    * Spring Data JPA interpreta el nombre del método y
+    genera automáticamente la consulta SQL necesaria para realizar la búsqueda en la base de datos.
+    No necesitas escribir la implementación de la consulta manualmente.
+     */
+
+    List<Colaborador> findByPuntajeGreaterThanEqualAndDonacionesUltimoMesGreaterThanEqual(Integer puntaje, Integer donacionesUltimoMes);
 }

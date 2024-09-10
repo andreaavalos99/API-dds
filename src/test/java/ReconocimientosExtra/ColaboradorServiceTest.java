@@ -1,105 +1,50 @@
 package ReconocimientosExtra;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.Arrays;
-import java.util.List;
-
 import ReconocimientosExtra.model.Colaborador;
 import ReconocimientosExtra.model.ColaboradorRepository;
 import ReconocimientosExtra.model.ColaboradorService;
+import ReconocimientosExtra.model.ReconocimientosExtraApplication;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Arrays;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ColaboradorServiceTest {
+@SpringBootTest(classes = ReconocimientosExtraApplication.class)  // Asegúrate de que esta clase esté en el paquete correcto
+public class ColaboradorServiceTest {
 
-    @Mock
-    private ColaboradorRepository colaboradorRepository;
-
-    @InjectMocks
+    @Autowired
     private ColaboradorService colaboradorService;
+
+    @Autowired
+    private ColaboradorRepository colaboradorRepository;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        colaboradorRepository.deleteAll();  // Limpiar la base de datos antes de cada prueba
+        // Agregar colaboradores de prueba a la base de datos
+        colaboradorRepository.save(new Colaborador(null, "Juan", 50, 20));
+        colaboradorRepository.save(new Colaborador(null, "Ana", 60, 10));
+        colaboradorRepository.save(new Colaborador(null, "Pedro", 70, 15));
+        colaboradorRepository.save(new Colaborador(null, "Laura", 40, 25));
     }
 
     @Test
     void testObtenerColaboradoresReconocidos() {
-        // Arrange
-        Colaborador colaborador1 = new Colaborador();
-        colaborador1.setId(1L);
-        colaborador1.setNombre("Juan Perez");
-        colaborador1.setPuntaje(85);
-        colaborador1.setDonacionViandas(10);
-
-        Colaborador colaborador2 = new Colaborador();
-        colaborador2.setId(2L);
-        colaborador2.setNombre("Ana Gomez");
-        colaborador2.setPuntaje(90);
-        colaborador2.setDonacionViandas(12);
-
-        List<Colaborador> colaboradoresMock = Arrays.asList(colaborador1, colaborador2);
-
-        // Configurar el mock
-        when(colaboradorRepository.findByPuntajeYDonacionViandas(80, 5))
-                .thenReturn(colaboradoresMock);
-
-        // Actuar
-        List<Colaborador> result = colaboradorService.obtenerColaboradoresReconocidos(80, 5, 10);
-
-        // Verificar el resultado
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        assertEquals("Juan Perez", result.get(0).getNombre());
-        assertEquals("Ana Gomez", result.get(1).getNombre());
-
-        // Verificar que el repositorio fue llamado con los argumentos correctos
-        verify(colaboradorRepository).findByPuntajeYDonacionViandas(80, 5);
+        List<Colaborador> colaboradores = colaboradorService.obtenerColaboradoresReconocidos(50, 15, 2);
+        assertEquals(2, colaboradores.size());
+        assertTrue(colaboradores.stream().anyMatch(c -> c.getNombre().equals("Juan")));
+        assertTrue(colaboradores.stream().anyMatch(c -> c.getNombre().equals("Pedro")));
     }
 
     @Test
-    void testObtenerColaboradoresReconocidos_Limit() {
-        // Arrange
-        Colaborador colaborador1 = new Colaborador();
-        colaborador1.setId(1L);
-        colaborador1.setNombre("Juan Perez");
-        colaborador1.setPuntaje(85);
-        colaborador1.setDonacionViandas(10);
-
-        Colaborador colaborador2 = new Colaborador();
-        colaborador2.setId(2L);
-        colaborador2.setNombre("Ana Gomez");
-        colaborador2.setPuntaje(90);
-        colaborador2.setDonacionViandas(12);
-
-        List<Colaborador> colaboradoresMock = Arrays.asList(colaborador1, colaborador2);
-
-        // Configurar el mock
-        when(colaboradorRepository.findByPuntajeYDonacionViandas(80, 5))
-                .thenReturn(colaboradoresMock);
-
-        // Actuar
-        List<Colaborador> result = colaboradorService.obtenerColaboradoresReconocidos(80, 5, 1);
-
-        // Verificar el resultado
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals("Juan Perez", result.get(0).getNombre());
+    void testObtenerColaboradoresReconocidosNoResultados() {
+        List<Colaborador> colaboradores = colaboradorService.obtenerColaboradoresReconocidos(100, 30, 2);
+        assertTrue(colaboradores.isEmpty());
     }
 }

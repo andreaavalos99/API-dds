@@ -1,14 +1,10 @@
 package ReconocimientosExtra.model;
 
-import ReconocimientosExtra.model.Colaborador;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Setter
 @Getter
@@ -16,13 +12,23 @@ import lombok.Setter;
 @Table(name = "colaboradores")
 public class Colaborador {
 
-    // Getters y setters
-    @Id
+	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	private String nombre;
-	private int puntaje;
-	private int donacionViandas;
+	private Integer puntaje;
+	private Integer donacionesUltimoMes;
 
+	// Constructor sin argumentos (requerido por JPA)
+	public Colaborador() {
+	}
+
+	// Constructor con parámetros
+	public Colaborador(Long id, String nombre, Integer puntaje, Integer donacionesUltimoMes) {
+		this.id = id;
+		this.nombre = nombre;
+		this.puntaje = puntaje;
+		this.donacionesUltimoMes = donacionesUltimoMes;
+	}
 }
